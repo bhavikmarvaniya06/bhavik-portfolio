@@ -3,6 +3,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AdminDashboard.css";
 
+const API_URL = (
+  import.meta.env.VITE_API_URL || "http://localhost:5000"
+).replace(/\/$/, "");
+
 function AdminDashboard() {
   const navigate = useNavigate();
 
@@ -20,7 +24,7 @@ function AdminDashboard() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/contact", {
+      const response = await fetch(`${API_URL}/api/contact`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -49,6 +53,7 @@ function AdminDashboard() {
       navigate("/admin");
       return;
     }
+
     fetchContacts();
   }, []);
 
@@ -67,8 +72,10 @@ function AdminDashboard() {
 
     const count = contacts.filter((contact) => {
       if (!contact.createdAt) return false;
+
       const contactDate = new Date(contact.createdAt);
       contactDate.setHours(0, 0, 0, 0);
+
       return contactDate.getTime() === date.getTime();
     }).length;
 
@@ -163,7 +170,7 @@ function AdminDashboard() {
   const updateReadStatus = async (id, isRead) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/contact/${id}/read`,
+        `${API_URL}/api/contact/${id}/read`,
         {
           method: "PATCH",
           headers: {
@@ -200,6 +207,7 @@ function AdminDashboard() {
 
   const openMessage = async (contact) => {
     setSelectedContact(contact);
+
     if (!contact.isRead) {
       await updateReadStatus(contact._id, true);
     }
@@ -212,7 +220,7 @@ function AdminDashboard() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/contact/${id}`,
+        `${API_URL}/api/contact/${id}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
@@ -228,6 +236,7 @@ function AdminDashboard() {
       setContacts((previous) =>
         previous.filter((contact) => contact._id !== id)
       );
+
       setSelectedContact(null);
     } catch (err) {
       alert(err.message);
@@ -265,6 +274,7 @@ function AdminDashboard() {
             <button className="export-button" onClick={exportCSV}>
               ↓ Export CSV
             </button>
+
             <button className="analytics-refresh" onClick={fetchContacts}>
               Refresh
             </button>
@@ -304,6 +314,7 @@ function AdminDashboard() {
               {lastSevenDays.map((day, index) => (
                 <div className="chart-column" key={index}>
                   <span className="chart-count">{day.count}</span>
+
                   <div className="chart-bar-container">
                     <div
                       className="chart-bar"
@@ -312,6 +323,7 @@ function AdminDashboard() {
                       }}
                     />
                   </div>
+
                   <span className="chart-day">{day.label}</span>
                 </div>
               ))}
@@ -329,6 +341,7 @@ function AdminDashboard() {
                 <span>Read Messages</span>
                 <strong>{readPercentage}%</strong>
               </div>
+
               <div className="progress-track">
                 <div
                   className="progress-read"
@@ -342,6 +355,7 @@ function AdminDashboard() {
                 <span>Unread Messages</span>
                 <strong>{100 - readPercentage}%</strong>
               </div>
+
               <div className="progress-track">
                 <div
                   className="progress-unread"
@@ -417,6 +431,7 @@ function AdminDashboard() {
                       <td>{contact.name}</td>
                       <td>{contact.email}</td>
                       <td>{contact.subject}</td>
+
                       <td>
                         <span
                           className={
@@ -428,11 +443,13 @@ function AdminDashboard() {
                           {contact.isRead ? "Read" : "Unread"}
                         </span>
                       </td>
+
                       <td>
                         {contact.createdAt
                           ? new Date(contact.createdAt).toLocaleDateString()
                           : "-"}
                       </td>
+
                       <td className="admin-actions">
                         <button
                           className="view-message-button"
@@ -440,6 +457,7 @@ function AdminDashboard() {
                         >
                           View
                         </button>
+
                         <button
                           className="delete-message-button"
                           onClick={() => handleDelete(contact._id)}

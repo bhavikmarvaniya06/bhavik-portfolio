@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
@@ -11,6 +12,11 @@ import {
   ExternalLink,
 } from "lucide-react";
 
+// Local development and production API URL
+const API_URL = (
+  import.meta.env.VITE_API_URL || "http://localhost:5000"
+).replace(/\/$/, "");
+
 const contactDetails = [
   {
     icon: Mail,
@@ -22,7 +28,7 @@ const contactDetails = [
     icon: Phone,
     title: "Phone",
     value: "+91 81286 50667",
-    link: "tel:+91 81286 50667",
+    link: "tel:+918128650667",
   },
   {
     icon: MapPin,
@@ -65,7 +71,7 @@ export default function Contact() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/contact",
+        `${API_URL}/api/contact`,
         formData
       );
 
@@ -186,7 +192,6 @@ export default function Contact() {
               <div className="contact-form-row">
                 <div className="contact-input-group">
                   <label htmlFor="contact-name">Your Name</label>
-
                   <input
                     id="contact-name"
                     type="text"
@@ -200,7 +205,6 @@ export default function Contact() {
 
                 <div className="contact-input-group">
                   <label htmlFor="contact-email">Your Email</label>
-
                   <input
                     id="contact-email"
                     type="email"
@@ -215,7 +219,6 @@ export default function Contact() {
 
               <div className="contact-input-group">
                 <label htmlFor="contact-subject">Subject</label>
-
                 <input
                   id="contact-subject"
                   type="text"
@@ -229,7 +232,6 @@ export default function Contact() {
 
               <div className="contact-input-group">
                 <label htmlFor="contact-message">Message</label>
-
                 <textarea
                   id="contact-message"
                   name="message"
@@ -259,7 +261,9 @@ export default function Contact() {
                   }
                   role="status"
                 >
-                  {status.type === "success" && <CheckCircle size={18} />}
+                  {status.type === "success" && (
+                    <CheckCircle size={18} />
+                  )}
                   <span>{status.message}</span>
                 </div>
               )}

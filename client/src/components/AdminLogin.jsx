@@ -3,6 +3,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AdminLogin.css";
 
+const API_URL = (
+  import.meta.env.VITE_API_URL || "http://localhost:5000"
+).replace(/\/$/, "");
+
 function AdminLogin() {
   const navigate = useNavigate();
 
@@ -17,7 +21,7 @@ function AdminLogin() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
